@@ -1,77 +1,56 @@
+
 # CyberSecurity Toolbox
 
 ## 📌 Description
-Bienvenue dans **CyberSecurity Toolbox**, un projet développé dans le cadre d'une étude académique visant à fournir une solution complète en matière de cybersécurité. Cette boîte à outils est divisée en deux sections principales : **Offensive** et **Défensive**. L'objectif est d'offrir une plateforme modulaire permettant d'analyser, tester, et sécuriser efficacement des systèmes informatiques.
+Ce projet est une boîte à outils de cybersécurité complète, comprenant des outils offensifs et défensifs prêts à être utilisés. Il permet d'analyser, d'attaquer et de défendre des systèmes à des fins éducatives uniquement.
 
-## 📑 Table des matières
-- [📌 Description](#-description)
-- [🛠️ Fonctionnalités](#️-fonctionnalités)
-- [💾 Installation](#-installation)
-- [🚀 Utilisation](#-utilisation)
-- [📂 Structure du projet](#-structure-du-projet)
-- [🤝 Contribution](#-contribution)
-
-## 🛠️ Fonctionnalités
-### 🔒 Offensive
-- **Tests d'intrusion** : Scans réseau, énumération, exploitation de vulnérabilités.
-- **Attaques par force brute** : Outils spécialisés pour tester la robustesse des mots de passe.
-- **Génération de rapports d'analyse** : Production de rapports détaillés sur les faiblesses détectées.
-
-### 🛡️ Défensive
-- **Détection d'intrusions** : Systèmes d'alerte pour surveiller les activités suspectes.
-- **Analyse de logs** : Extraction d'informations critiques pour identifier des menaces potentielles.
-- **Pare-feu personnalisés** : Mise en place de règles de sécurité spécifiques.
-- **Rapports de sécurité** : Compte-rendus automatisés des événements suspects détectés.
-
-## 💾 Installation
+## 🔍 Installation
 1. Clonez le dépôt :
 ```bash
- git clone https://github.com/Sir22io/Projet-etude-SDV.git
+git clone https://github.com/VOTRE-NOM-UTILISATEUR/Projet-etude-SDV.git
 ```
-2. Accédez au dossier du projet :
+2. Rendez le script d'installation exécutable :
 ```bash
- cd Projet-etude-SDV
+chmod +x install.sh
 ```
-3. Installez les dépendances requises (si applicable) :
+3. Exécutez le script d'installation :
 ```bash
- pip install -r requirements.txt
+./install.sh
 ```
 
-## 🚀 Utilisation
-- **Outils Offensifs** :
-  ```bash
-  python offensive_tool.py --help
-  ```
-- **Outils Défensifs** :
-  ```bash
-  python defensive_tool.py --help
-  ```
+## 💡 Utilisation
+Lancez le script Python principal :
+```bash
+python3 cybersecurity_toolbox.py
+```
+Un menu interactif vous permettra de choisir les outils à utiliser.
 
-## 📂 Structure du projet
-```
-/ CyberSecurity Toolbox
-|-- /offensive
-|   |-- offensive_tool.py
-|-- /defensive
-|   |-- defensive_tool.py
-|-- /docs
-|-- README.md
-|-- requirements.txt
-```
+## 📑 Outils inclus
+### 🔒 Offensifs :
+- **Commix** (Injection de commandes)
+- **SQLMap** (Injection SQL)
+- **WPScan** (Scanner WordPress)
+- **Masscan** (Scanner réseau rapide)
+- **Nikto** (Scanner d'applications web)
+- **Gobuster** (Scanner de répertoires et fichiers cachés)
+- **Arachni** (Scanner de vulnérabilités d'applications web)
+- **Fimap** (Détection de LFI - Local File Inclusion)
+- **Clusterd** (Attaques sur serveurs d'applications)
 
-## 🤝 Contribution
-Les contributions sont les bienvenues ! Merci de suivre les étapes suivantes :
-1. **Forkez** le projet.
-2. **Créez une branche** :
-```bash
- git checkout -b feature/NouvelleFonctionnalite
-```
-3. **Commitez vos modifications** :
-```bash
- git commit -m "Ajout d'une nouvelle fonctionnalité"
-```
-4. **Pushez la branche** :
-```bash
- git push origin feature/NouvelleFonctionnalite
-```
-5. **Créez une Pull Request**.
+### 🛡️ Défensifs :
+- **Snort** (Détection d'intrusions réseau - IDS)
+- **Suricata** (Moteur IDS/IPS avancé)
+- **OpenVAS** (Scanner de vulnérabilités complet)
+- **Binwalk** (Analyse et extraction de firmwares)
+- **Rkhunter** (Détection de rootkits Linux)
+- **Chkrootkit** (Scanner de rootkits Linux)
+- **Iptables** (Pare-feu intégré à Linux)
+- **Log Analysis** (Analyse des logs système)
+
+## 📊 Résultats
+- Les résultats de chaque outil sont enregistrés dans un dossier nommé `results/`.
+- Les logs d'exécution sont enregistrés dans `toolbox_log.txt`.
+- Un rapport complet est généré sous `final_report.txt`.
+
+## 📄 Licence
+Projet éducatif réalisé dans le cadre d'un projet d'étude.

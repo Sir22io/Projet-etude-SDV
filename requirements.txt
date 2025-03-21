@@ -1,4 +1,3 @@
 
 sqlmap
-wpscan
 commix

@@ -57,5 +57,6 @@ Projet éducatif réalisé dans le cadre d'un projet d'étude.
 
 ## 📄 Schéma de l'infrastructure du projet
 
-![shcela infraastructure toolbox](https://github.com/user-attachments/assets/2cff5f71-e106-4958-8d4a-b4c5d3fe796c)
+![schema draw io toolbox final](https://github.com/user-attachments/assets/5b21f8d0-aec8-45d5-8bd5-3513295bd446)
+
 

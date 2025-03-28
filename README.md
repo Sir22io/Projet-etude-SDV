@@ -54,3 +54,7 @@ Un menu interactif vous permettra de choisir les outils à utiliser.
 
 ## 📄 Licence
 Projet éducatif réalisé dans le cadre d'un projet d'étude.
+
+Schéma de l'infrastructure du projet : 
+![shcela infraastructure toolbox](https://github.com/user-attachments/assets/2cff5f71-e106-4958-8d4a-b4c5d3fe796c)
+

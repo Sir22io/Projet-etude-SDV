@@ -1,40 +1,32 @@
 #!/bin/bash
 
-# Mise à jour du système et mise à niveau
-echo "Mise à jour du système et mise à niveau des paquets..."
-apt update && apt upgrade -y
+# Mise à jour des dépôts
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
-# Liste des outils à installer
-TOOLS=("commix" "wpscan" "masscan" "gobuster" "nikto" "arachni" "fimap" "clusterd" "git" "curl" "python3-pip")
+# Installation des outils nécessaires pour le pentesting
+echo "Installation des outils de pentesting..."
 
-# Installation des outils nécessaires
-for TOOL in "${TOOLS[@]}"; do
-    if ! command -v $TOOL &> /dev/null
-    then
-        echo "$TOOL n'est pas installé. Installation en cours..."
-        apt install -y $TOOL
-    else
-        echo "$TOOL est déjà installé."
-    fi
+# Installation des outils de base
+sudo apt-get install nmap nikto gobuster sqlmap wpscan metasploit-framework hydra commix burpsuite arachni -y
+
+# Vérification que chaque outil est bien installé
+echo "Vérification des installations..."
+
+# Liste des outils à vérifier
+tools=("nmap" "nikto" "gobuster" "sqlmap" "wpscan" "msfconsole" "hydra" "commix" "burpsuite" "arachni")
+
+# Vérification que chaque outil est installé
+for tool in "${tools[@]}"
+do
+  if command -v $tool &> /dev/null
+  then
+    echo "$tool est installé"
+  else
+    echo "$tool n'a pas pu être installé"
+  fi
 done
 
-# Installation de dépendances supplémentaires pour les outils basés sur Python
-echo "Installation de dépendances Python..."
-pip3 install --upgrade pip
-pip3 install requests beautifulsoup4
-
-# Vérification et installation de git et curl si nécessaire
-if ! command -v git &> /dev/null
-then
-    echo "Git n'est pas installé. Installation de Git..."
-    apt install -y git
-fi
-
-if ! command -v curl &> /dev/null
-then
-    echo "Curl n'est pas installé. Installation de Curl..."
-    apt install -y curl
-fi
-
-# Confirmation de l'installation
-echo "Installation terminée avec succès !"
+# Finalisation de l'installation
+echo "Installation terminée!"
+echo "Vous pouvez maintenant tester les outils en lançant des scans via leurs commandes respectives."

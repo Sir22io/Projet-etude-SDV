@@ -42,18 +42,15 @@ def generate_report():
             logs = log_file.read()
             report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======")
 
-")
             report_file.write(logs)
-            report_file.write("
-====== Fin du Rapport ======
-")
+            report_file.write("====== Fin du Rapport ======")
+            
     print(f"
 📄 Rapport final généré dans {REPORT_FILE}")
 
 def show_logs():
     if os.path.exists(LOG_FILE):
-        print("📖 Affichage des logs en direct :
-")
+        print("📖 Affichage des logs en direct :")
         with open(LOG_FILE, "r") as log_file:
             print(log_file.read())
     else:

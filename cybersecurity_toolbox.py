@@ -91,8 +91,7 @@ def defensive_tools():
 def run_tools(tools):
     for index, (name, command, output, description) in enumerate(tools, start=1):
         print(f"{index}. {name} - {description}")
-    choice = input("
-Sélectionnez un outil à exécuter (ou 'a' pour tous, 'l' pour logs, 'q' pour quitter) : ")
+    choice = input("Sélectionnez un outil à exécuter (ou 'a' pour tous, 'l' pour logs, 'q' pour quitter) : ")
     
     if choice.lower() == 'a':
         for name, command, output, _ in tools:

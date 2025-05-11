@@ -40,7 +40,7 @@ def generate_report():
     with open(REPORT_FILE, "w") as report_file:
         with open(LOG_FILE, "r") as log_file:
             logs = log_file.read()
-            report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======
+            report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======")
 
 ")
             report_file.write(logs)

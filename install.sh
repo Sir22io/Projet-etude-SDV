@@ -64,3 +64,6 @@ echo "Installation des packages Python..."
 pip3 install -r requirements.txt
 
 echo "✅ Installation terminée."
+
+xdg-open README.md 2>/dev/null || cat README.md
+

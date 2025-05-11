@@ -1,74 +1,40 @@
 #!/bin/bash
-echo "Installation des outils nécessaires..."
 
-# Update package list
-sudo apt-get update
+# Mise à jour du système et mise à niveau
+echo "Mise à jour du système et mise à niveau des paquets..."
+apt update && apt upgrade -y
 
-# Installer les outils de base
-sudo apt-get install -y python3 python3-pip masscan nikto gobuster nmap binwalk rkhunter chkrootkit ruby-full
+# Liste des outils à installer
+TOOLS=("commix" "wpscan" "masscan" "gobuster" "nikto" "arachni" "fimap" "clusterd" "git" "curl" "python3-pip")
 
-# Installer SQLMap
-if ! command -v sqlmap &> /dev/null
+# Installation des outils nécessaires
+for TOOL in "${TOOLS[@]}"; do
+    if ! command -v $TOOL &> /dev/null
+    then
+        echo "$TOOL n'est pas installé. Installation en cours..."
+        apt install -y $TOOL
+    else
+        echo "$TOOL est déjà installé."
+    fi
+done
+
+# Installation de dépendances supplémentaires pour les outils basés sur Python
+echo "Installation de dépendances Python..."
+pip3 install --upgrade pip
+pip3 install requests beautifulsoup4
+
+# Vérification et installation de git et curl si nécessaire
+if ! command -v git &> /dev/null
 then
-    echo "Installation de SQLMap..."
-    sudo apt-get install -y sqlmap
+    echo "Git n'est pas installé. Installation de Git..."
+    apt install -y git
 fi
 
-# Installer WPScan (via Ruby)
-if ! command -v wpscan &> /dev/null
+if ! command -v curl &> /dev/null
 then
-    echo "Installation de WPScan..."
-    sudo gem install wpscan
+    echo "Curl n'est pas installé. Installation de Curl..."
+    apt install -y curl
 fi
 
-# Installer OpenVAS
-if ! command -v gvm &> /dev/null
-then
-    echo "Installation d'OpenVAS..."
-    sudo apt-get install -y openvas
-fi
-
-# Installer Suricata
-if ! command -v suricata &> /dev/null
-then
-    echo "Installation de Suricata..."
-    sudo apt-get install -y suricata
-fi
-
-# Installer Arachni (nécessite un téléchargement manuel)
-if ! command -v arachni &> /dev/null
-then
-    echo "Installation d'Arachni..."
-    git clone https://github.com/Arachni/arachni.git
-    cd arachni && sudo ruby install.rb && cd ..
-fi
-
-# Installer Fimap
-if ! command -v fimap &> /dev/null
-then
-    echo "Installation de Fimap..."
-    git clone https://github.com/kurobeats/fimap.git
-    # fimap est un script Python, pas besoin d'installation complexe
-    echo "Fimap installé depuis GitHub"
-fi
-
-# Installer Clusterd
-if ! command -v clusterd &> /dev/null
-then
-    echo "Installation de Clusterd..."
-    git clone https://github.com/hatRiot/clusterd.git
-    cd clusterd && sudo pip3 install -r requirements.txt && cd ..
-fi
-
-# Installer Commix
-if ! command -v commix &> /dev/null
-then
-    echo "Installation de Commix..."
-    git clone https://github.com/commixproject/commix.git
-    cd commix && sudo python3 setup.py install && cd ..
-fi
-
-# Installer des packages Python supplémentaires pour les outils
-pip3 install -r requirements.txt
-
-echo "✅ Installation terminée."
+# Confirmation de l'installation
+echo "Installation terminée avec succès !"

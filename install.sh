@@ -10,6 +10,10 @@ echo "Installation des outils de pentesting..."
 # Installation des outils de base
 sudo apt-get install nmap nikto gobuster sqlmap wpscan metasploit-framework hydra commix burpsuite arachni -y
 
+# Installation de tkinter
+echo "Installation de tkinter..."
+sudo apt-get install python3-tk -y
+
 # Vérification que chaque outil est bien installé
 echo "Vérification des installations..."
 

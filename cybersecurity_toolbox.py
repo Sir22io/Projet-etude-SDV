@@ -45,8 +45,7 @@ def generate_report():
             report_file.write(logs)
             report_file.write("====== Fin du Rapport ======")
             
-    print(f"
-📄 Rapport final généré dans {REPORT_FILE}")
+    print(f"📄 Rapport final généré dans {REPORT_FILE}")
 
 def show_logs():
     if os.path.exists(LOG_FILE):

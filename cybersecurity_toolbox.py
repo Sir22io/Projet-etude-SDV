@@ -101,8 +101,55 @@ class ToolboxApp(QWidget):
         path = generate_report()
         QMessageBox.information(self, "Rapport généré", f"Rapport enregistré dans {path}")
 
+def display_cli():
+    print("===== Bienvenue dans la CyberSecurity Toolbox (CLI) =====")
+    ip = input("Entrez l'adresse IP cible : ")
+    url = input("Entrez l'URL cible : ")
+
+    tools = {
+        "1": ("Nmap", f"nmap -sP {ip}", "nmap.txt"),
+        "2": ("SQLMap", f"sqlmap -u {url} --batch", "sqlmap.txt"),
+        "3": ("WPScan", f"wpscan --url {url}", "wpscan.txt"),
+        "4": ("Gobuster", f"gobuster dir -u {url} -w /usr/share/wordlists/dirb/common.txt", "gobuster.txt"),
+        "5": ("Nikto", f"nikto -h {url}", "nikto.txt"),
+    }
+
+    while True:
+        print("\n--- Menu CLI ---")
+        print("1. Nmap")
+        print("2. SQLMap")
+        print("3. WPScan")
+        print("4. Gobuster")
+        print("5. Nikto")
+        print("6. Générer le rapport")
+        print("7. Quitter")
+        choice = input("Votre choix : ")
+
+        if choice in tools:
+            name, cmd, outfile = tools[choice]
+            print(f"\n➡️  Lancement de {name}...")
+            print(run_tool(cmd, outfile))
+        elif choice == "6":
+            path = generate_report()
+            print(f"📄 Rapport généré : {path}")
+        elif choice == "7":
+            print("👋 Au revoir !")
+            break
+        else:
+            print("❌ Choix invalide. Veuillez réessayer.")
+
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = ToolboxApp()
-    window.show()
-    sys.exit(app.exec_())
+    print("===== CyberSecurity Toolbox =====")
+    print("1. Interface Graphique (GUI)")
+    print("2. Interface en Ligne de Commande (CLI)")
+    mode = input("Choisissez le mode (1 ou 2) : ")
+
+    if mode == "1":
+        app = QApplication(sys.argv)
+        window = ToolboxApp()
+        window.show()
+        sys.exit(app.exec_())
+    elif mode == "2":
+        display_cli()
+    else:
+        print("❌ Choix invalide. Relancez le programme.")

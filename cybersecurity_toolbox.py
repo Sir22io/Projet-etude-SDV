@@ -3,8 +3,7 @@ import sys
 from datetime import datetime
 import subprocess
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QTextEdit, QMessageBox, QComboBox
+    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox
 )
 from PyQt5.QtCore import QProcess
 import psycopg2

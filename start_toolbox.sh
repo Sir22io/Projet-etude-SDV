@@ -6,10 +6,6 @@ echo "🚀 Démarrage de la CyberSecurity Toolbox"
 echo "📡 Lancement de PostgreSQL..."
 sudo service postgresql start
 
-# ☁️ Démarrage de MinIO dans un terminal séparé
-echo "☁️ Lancement de MinIO..."
-gnome-terminal -- bash -c "minio server /mnt/data; exec bash"
-
 # ⏳ Petite pause pour laisser les services démarrer
 sleep 3
 

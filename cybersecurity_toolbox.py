@@ -5,9 +5,15 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLa
 import sys
 
 RESULTS_DIR = "results"
-LOG_FILE = "toolbox_log.txt"
-REPORT_FILE = "final_report.txt"
 os.makedirs(RESULTS_DIR, exist_ok=True)
+
+# Fonction pour obtenir un nom de fichier horodaté
+def get_timestamped_filename(base_name):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return f"{base_name}_{timestamp}.txt"
+
+# Log file avec horodatage
+LOG_FILE = os.path.join(RESULTS_DIR, get_timestamped_filename("toolbox_log"))
 
 # Fonctions de base
 def log_message(message):
@@ -27,7 +33,9 @@ def run_tool(command, output_file):
         return msg
 
 def generate_report():
-    with open(REPORT_FILE, "w") as report_file:
+    report_filename = get_timestamped_filename("final_report")
+    report_path = os.path.join(RESULTS_DIR, report_filename)
+    with open(report_path, "w") as report_file:
         report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======\n\n")
 
         if os.path.exists(LOG_FILE):
@@ -51,8 +59,8 @@ def generate_report():
 
         report_file.write("====== Fin du Rapport ======\n")
 
-    print(f"📄 Rapport généré avec les résultats complets dans {REPORT_FILE}")
-    return REPORT_FILE
+    print(f"📄 Rapport généré avec les résultats complets dans {report_path}")
+    return report_path
 
 # Interface PyQt5
 class ToolboxApp(QWidget):
@@ -60,6 +68,7 @@ class ToolboxApp(QWidget):
         super().__init__()
         self.setWindowTitle("CyberSecurity Toolbox - PyQt5")
         self.setGeometry(100, 100, 600, 400)
+        self.last_report_path = None
         self.init_ui()
 
     def init_ui(self):
@@ -93,6 +102,14 @@ class ToolboxApp(QWidget):
         report_btn.clicked.connect(self.show_report)
         layout.addWidget(report_btn)
 
+        open_folder_btn = QPushButton("📂 Ouvrir le dossier des résultats")
+        open_folder_btn.clicked.connect(self.open_results_folder)
+        layout.addWidget(open_folder_btn)
+
+        open_report_btn = QPushButton("📄 Ouvrir le dernier rapport généré")
+        open_report_btn.clicked.connect(self.open_last_report)
+        layout.addWidget(open_report_btn)
+
         self.setLayout(layout)
 
     def run_selected_tool(self):
@@ -118,7 +135,37 @@ class ToolboxApp(QWidget):
 
     def show_report(self):
         path = generate_report()
-        QMessageBox.information(self, "Rapport généré", f"Rapport enregistré dans {path}")
+        self.last_report_path = path
+        with open(path, "r", errors='ignore') as f:
+            content = f.read()
+        QMessageBox.information(self, "Rapport généré", content)
+
+    def open_results_folder(self):
+        try:
+            if sys.platform.startswith("win"):
+                os.startfile(RESULTS_DIR)
+            elif sys.platform.startswith("darwin"):
+                subprocess.run(["open", RESULTS_DIR])
+            else:
+                subprocess.run(["xdg-open", RESULTS_DIR])
+            QMessageBox.information(self, "Dossier ouvert", f"Le dossier '{RESULTS_DIR}' a été ouvert avec succès.")
+        except Exception as e:
+            QMessageBox.warning(self, "Erreur", f"Impossible d'ouvrir le dossier : {e}")
+
+    def open_last_report(self):
+        if self.last_report_path and os.path.exists(self.last_report_path):
+            try:
+                if sys.platform.startswith("win"):
+                    os.startfile(self.last_report_path)
+                elif sys.platform.startswith("darwin"):
+                    subprocess.run(["open", self.last_report_path])
+                else:
+                    subprocess.run(["xdg-open", self.last_report_path])
+            except Exception as e:
+                QMessageBox.warning(self, "Erreur", f"Impossible d'ouvrir le rapport : {e}")
+        else:
+            QMessageBox.information(self, "Rapport manquant", "Aucun rapport n'a été généré récemment.")
+
 
 def display_cli():
     print("===== Bienvenue dans la CyberSecurity Toolbox (CLI) =====")

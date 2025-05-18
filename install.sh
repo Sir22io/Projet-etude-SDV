@@ -9,19 +9,20 @@ echo "📦 Mise à jour du système..."
 sudo apt-get update -y
 sudo apt-get upgrade -y
 
+# Installation de Python3 et pip
+echo "🐍 Installation de Python3 et pip..."
+sudo apt-get install -y python3 python3-pip
+
+# Installation de PyQt5 pour l'interface graphique
+echo "🎨 Installation de PyQt5 pour l’interface graphique..."
+pip3 install PyQt5
+python3 -c "from PyQt5.QtWidgets import QApplication; print('✅ PyQt5 est prêt !')"
+
 # Installation des outils de pentest
 echo "🛠️ Installation des outils de pentest..."
 sudo apt-get install -y nmap nikto gobuster sqlmap wpscan metasploit-framework hydra commix burpsuite arachni
 
-# Installation de Python 3 et pip
-echo "🐍 Vérification de Python3 et pip..."
-sudo apt-get install -y python3 python3-pip
-
-# Installation de PyQt5
-echo "🎨 Installation de PyQt5..."
-pip3 install PyQt5
-
-# Vérification des installations
+# Vérification des outils installés
 echo "🔍 Vérification des outils installés..."
 
 tools=("nmap" "nikto" "gobuster" "sqlmap" "wpscan" "msfconsole" "hydra" "commix" "burpsuite" "arachni")
@@ -37,4 +38,4 @@ do
 done
 
 echo "✅ Installation terminée avec succès !"
-echo "👉 Vous pouvez maintenant lancer la toolbox avec votre interface PyQt5."
+echo "👉 Vous pouvez maintenant lancer la toolbox avec : python3 cybersecurity_toolbox.py"

@@ -1,4 +1,6 @@
-
+PyQt5
+minio
+psycopg2-binary
 sqlmap
 wpscan
 commix

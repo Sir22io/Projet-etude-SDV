@@ -1,8 +1,7 @@
 import os
 import subprocess
 from datetime import datetime
-from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
-                             QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox)
+from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox)
 import sys
 
 RESULTS_DIR = "results"

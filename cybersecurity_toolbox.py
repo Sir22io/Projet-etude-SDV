@@ -28,11 +28,30 @@ def run_tool(command, output_file):
 
 def generate_report():
     with open(REPORT_FILE, "w") as report_file:
+        report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======\n\n")
+
         if os.path.exists(LOG_FILE):
             with open(LOG_FILE, "r") as log_file:
-                report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======\n\n")
-                report_file.write(log_file.read())
-                report_file.write("\n====== Fin du Rapport ======\n")
+                log_lines = log_file.readlines()
+
+            for line in log_lines:
+                report_file.write(f"🔹 {line.strip()}\n")
+                if "Résultat dans" in line:
+                    parts = line.strip().split("Résultat dans")
+                    if len(parts) > 1:
+                        filename = parts[1].strip()
+                        filepath = os.path.join(RESULTS_DIR, filename)
+                        if os.path.exists(filepath):
+                            report_file.write(f"\n📄 Contenu de {filename} :\n")
+                            with open(filepath, "r", errors='ignore') as result_file:
+                                report_file.write(result_file.read())
+                                report_file.write("\n\n")
+                        else:
+                            report_file.write(f"(⚠️ Fichier {filename} introuvable)\n\n")
+
+        report_file.write("====== Fin du Rapport ======\n")
+
+    print(f"📄 Rapport généré avec les résultats complets dans {REPORT_FILE}")
     return REPORT_FILE
 
 # Interface PyQt5

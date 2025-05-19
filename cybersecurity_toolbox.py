@@ -1,10 +1,7 @@
 import os
 import subprocess
 from datetime import datetime
-from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
-    QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox, QFileDialog
-)
+from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox, QFileDialog)
 from jinja2 import Environment, FileSystemLoader
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas

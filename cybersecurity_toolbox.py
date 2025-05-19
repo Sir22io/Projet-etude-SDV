@@ -1,97 +1,99 @@
 import os
-import sys
-from datetime import datetime
 import subprocess
+from datetime import datetime
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox
+    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
+    QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox, QFileDialog
 )
-from PyQt5.QtCore import QProcess
-import psycopg2
-from minio import Minio
+from jinja2 import Environment, FileSystemLoader
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+import sys
 
-# === Configuration de base ===
 RESULTS_DIR = "results"
 LOG_FILE = "toolbox_log.txt"
-REPORT_FILE = f"final_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+REPORT_FILE = "final_report.txt"
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# === Fonctions utilitaires ===
+# Fonctions de base
 def log_message(message):
-    with open(LOG_FILE, "a") as f:
-        f.write(f"{datetime.now()} - {message}\n")
+    with open(LOG_FILE, "a") as log_file:
+        log_file.write(f"{datetime.now()} - {message}\n")
 
-def run_tool(command, output_file, ip=None, url=None, tool_name=None):
+def run_tool(command, output_file):
     full_path = os.path.join(RESULTS_DIR, output_file)
     result = os.system(f"{command} > {full_path} 2>&1")
-
     if result == 0:
-        msg = f"✅ Commande OK : {command} -> {output_file}"
+        msg = f"✅ Commande OK : {command}. Résultat dans {output_file}"
         log_message(msg)
-        print(msg)
-
-        if ip and url and tool_name:
-            save_to_postgres(ip, url, tool_name, msg)
-        upload_to_minio(full_path)
         return msg
     else:
-        msg = f"❌ Échec : {command} -> {output_file}"
+        msg = f"❌ Échec commande : {command}. Voir {output_file}"
         log_message(msg)
-        print(msg)
         return msg
 
-def save_to_postgres(ip, url, tool, log):
-    try:
-        conn = psycopg2.connect(
-            database="toolbox_db",
-            user="postgres",
-            password="motdepasse",  # Remplace ici
-            host="localhost",
-            port="5432"
-        )
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO scans (ip_target, url_target, tool_used, log) VALUES (%s, %s, %s, %s)",
-            (ip, url, tool, log)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-        print("📥 Enregistré dans PostgreSQL")
-    except Exception as e:
-        print("❌ Erreur PostgreSQL :", e)
-
-def upload_to_minio(file_path):
-    try:
-        client = Minio(
-            "localhost:9000",
-            access_key="minioadmin",
-            secret_key="minioadmin",
-            secure=False
-        )
-        bucket = "toolbox"
-        if not client.bucket_exists(bucket):
-            client.make_bucket(bucket)
-        client.fput_object(bucket, os.path.basename(file_path), file_path)
-        print(f"📤 Upload MinIO : {file_path}")
-    except Exception as e:
-        print("❌ Erreur MinIO :", e)
-
-def generate_report():
+def generate_txt_report():
     with open(REPORT_FILE, "w") as report_file:
         if os.path.exists(LOG_FILE):
             with open(LOG_FILE, "r") as log_file:
-                report_file.write("====== Rapport Final CyberSecurity Toolbox ======\n\n")
+                report_file.write("====== Rapport Final de la CyberSecurity Toolbox ======\n\n")
                 report_file.write(log_file.read())
                 report_file.write("\n====== Fin du Rapport ======\n")
-    upload_to_minio(REPORT_FILE)
     return REPORT_FILE
 
-# === Interface graphique (GUI) PyQt5 ===
+def generate_html_report(data, output_path="results/report_final.html"):
+    env = Environment(loader=FileSystemLoader("templates"))
+    template = env.get_template("report_template.html")
+    html_content = template.render(data)
+    with open(output_path, "w") as f:
+        f.write(html_content)
+    return output_path
+
+def generate_pdf_report(data, output_path="results/report_final.pdf"):
+    c = canvas.Canvas(output_path, pagesize=A4)
+    width, height = A4
+
+    c.setFont("Helvetica-Bold", 16)
+    c.setFillColor(colors.darkblue)
+    c.drawString(50, height - 50, "🛡️ Rapport de Pentest - CyberSecurity Toolbox")
+
+    c.setFont("Helvetica-Bold", 12)
+    c.setFillColor(colors.black)
+    c.drawString(50, height - 100, f"📅 Date : {data.get('date')}")
+    c.drawString(50, height - 120, f"🌐 IP cible : {data.get('ip')}")
+    c.drawString(50, height - 140, f"🔗 URL cible : {data.get('url')}")
+
+    c.drawString(50, height - 180, "🛠️ Outils exécutés :")
+    y = height - 200
+    for tool in data.get('tools', []):
+        c.drawString(70, y, f"- {tool}")
+        y -= 15
+
+    y -= 30
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(50, y, "📄 Résultats & Logs :")
+    c.setFont("Helvetica", 10)
+    y -= 20
+
+    lines = data.get('logs', "").splitlines()
+    for line in lines:
+        if y < 100:
+            c.showPage()
+            y = height - 50
+        c.drawString(60, y, line[:100])
+        y -= 12
+
+    c.save()
+    return output_path
+
+# Interface PyQt5
 class ToolboxApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("CyberSecurity Toolbox - PyQt5")
-        self.setGeometry(100, 100, 700, 500)
+        self.setGeometry(100, 100, 600, 400)
+        self.selected_tools = []
         self.init_ui()
 
     def init_ui(self):
@@ -106,25 +108,31 @@ class ToolboxApp(QWidget):
         layout.addWidget(self.url_input)
 
         self.tool_selector = QComboBox()
-        self.tool_selector.addItems(["Nmap", "SQLMap", "WPScan", "Gobuster", "Nikto"])
+        tools = ["Nmap", "SQLMap", "WPScan", "Gobuster", "Nikto"]
+        self.tool_selector.addItems(tools)
         layout.addWidget(self.tool_selector)
 
         self.output_display = QTextEdit()
         self.output_display.setReadOnly(True)
         layout.addWidget(self.output_display)
 
-        run_btn = QPushButton("▶️ Lancer le scan")
+        run_btn = QPushButton("Exécuter l'outil sélectionné")
         run_btn.clicked.connect(self.run_selected_tool)
         layout.addWidget(run_btn)
 
-        report_btn = QPushButton("🧾 Générer le rapport")
-        report_btn.clicked.connect(self.show_report)
-        layout.addWidget(report_btn)
+        export_btn_layout = QHBoxLayout()
+        export_pdf = QPushButton("Exporter en PDF")
+        export_pdf.clicked.connect(self.export_pdf)
+        export_html = QPushButton("Exporter en HTML")
+        export_html.clicked.connect(self.export_html)
+        export_txt = QPushButton("Exporter en TXT")
+        export_txt.clicked.connect(self.export_txt)
 
-        open_results_btn = QPushButton("📂 Ouvrir le dossier des résultats")
-        open_results_btn.clicked.connect(self.open_results_folder)
-        layout.addWidget(open_results_btn)
+        export_btn_layout.addWidget(export_pdf)
+        export_btn_layout.addWidget(export_html)
+        export_btn_layout.addWidget(export_txt)
 
+        layout.addLayout(export_btn_layout)
         self.setLayout(layout)
 
     def run_selected_tool(self):
@@ -133,7 +141,7 @@ class ToolboxApp(QWidget):
         tool = self.tool_selector.currentText()
 
         if not ip or not url:
-            QMessageBox.warning(self, "Champs manquants", "Merci de saisir une IP et une URL.")
+            QMessageBox.warning(self, "Erreur", "Veuillez entrer l'IP et l'URL cibles.")
             return
 
         commands = {
@@ -145,61 +153,36 @@ class ToolboxApp(QWidget):
         }
 
         cmd, outfile = commands[tool]
-        result = run_tool(cmd, outfile, ip, url, tool)
+        result = run_tool(cmd, outfile)
         self.output_display.append(result)
+        if tool not in self.selected_tools:
+            self.selected_tools.append(tool)
 
-    def show_report(self):
-        path = generate_report()
-        QMessageBox.information(self, "✅ Rapport généré", f"Rapport enregistré : {path}")
+    def export_pdf(self):
+        data = self.get_report_data()
+        path = generate_pdf_report(data)
+        QMessageBox.information(self, "Export PDF", f"Rapport PDF généré : {path}")
 
-    def open_results_folder(self):
-        subprocess.run(["xdg-open", os.path.abspath(RESULTS_DIR)])
-        QMessageBox.information(self, "✅ Dossier ouvert", "Le dossier des résultats a été ouvert.")
+    def export_html(self):
+        data = self.get_report_data()
+        path = generate_html_report(data)
+        QMessageBox.information(self, "Export HTML", f"Rapport HTML généré : {path}")
 
-# === Interface CLI (optionnelle)
-def cli_mode():
-    print("=== Mode CLI ===")
-    ip = input("IP cible : ")
-    url = input("URL cible : ")
+    def export_txt(self):
+        path = generate_txt_report()
+        QMessageBox.information(self, "Export TXT", f"Rapport texte généré : {path}")
 
-    tools = [
-        ("Nmap", f"nmap -sP {ip}", "nmap.txt"),
-        ("SQLMap", f"sqlmap -u {url} --batch", "sqlmap.txt"),
-        ("WPScan", f"wpscan --url {url}", "wpscan.txt"),
-        ("Gobuster", f"gobuster dir -u {url} -w /usr/share/wordlists/dirb/common.txt", "gobuster.txt"),
-        ("Nikto", f"nikto -h {url}", "nikto.txt")
-    ]
+    def get_report_data(self):
+        return {
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "ip": self.ip_input.text(),
+            "url": self.url_input.text(),
+            "tools": self.selected_tools,
+            "logs": open(LOG_FILE).read() if os.path.exists(LOG_FILE) else ""
+        }
 
-    for i, (name, _, _) in enumerate(tools, 1):
-        print(f"{i}. {name}")
-    print("a. Tous | r. Rapport | q. Quitter")
-
-    choice = input("Ton choix : ").strip()
-    if choice == 'a':
-        for name, cmd, out in tools:
-            run_tool(cmd, out, ip, url, name)
-    elif choice == 'r':
-        generate_report()
-    elif choice == 'q':
-        sys.exit()
-    else:
-        try:
-            index = int(choice) - 1
-            name, cmd, out = tools[index]
-            run_tool(cmd, out, ip, url, name)
-        except:
-            print("Choix invalide.")
-
-# === Lancement principal
-if __name__ == "__main__":
-    print("1. Lancer l'interface graphique (GUI)")
-    print("2. Utiliser en ligne de commande (CLI)")
-    mode = input("Choix [1/2] : ")
-
-    if mode == "2":
-        cli_mode()
-    else:
-        app = QApplication(sys.argv)
-        window = ToolboxApp()
-        window.show()
-        sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = ToolboxApp()
+    window.show()
+    sys.exit(app.exec_())

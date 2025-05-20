@@ -1,7 +1,10 @@
 import os
 import subprocess
 from datetime import datetime
-from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QTextEdit, QMessageBox, QComboBox)
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
+    QLineEdit, QTextEdit, QMessageBox, QComboBox
+)
 import sys
 from cryptography.fernet import Fernet
 
@@ -9,10 +12,9 @@ RESULTS_DIR = "results"
 LOG_FILE = "toolbox_log.txt"
 REPORT_FILE = "final_report.txt"
 KEY_FILE = "toolbox.key"
-
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# =========================== CHIFFREMENT ===========================
+# ==================== CHIFFREMENT ====================
 def generate_key():
     if not os.path.exists(KEY_FILE):
         key = Fernet.generate_key()
@@ -39,7 +41,7 @@ def decrypt_file(filepath):
     decrypted_data = fernet.decrypt(encrypted_data)
     return decrypted_data.decode('utf-8')
 
-# =========================== LOGGING & RAPPORT ===========================
+# ==================== LOGGING / RAPPORT ====================
 def log_message(message):
     with open(LOG_FILE, "a") as log_file:
         log_file.write(f"{datetime.now()} - {message}\n")
@@ -50,14 +52,11 @@ def run_tool(command, output_file):
     result = os.system(f"{command} > {full_path} 2>&1")
     if result == 0:
         msg = f"✅ Commande OK : {command}. Résultat dans {output_file}"
-        log_message(msg)
-        encrypt_file(full_path)
-        return msg
     else:
         msg = f"❌ Échec commande : {command}. Voir {output_file}"
-        log_message(msg)
-        encrypt_file(full_path)
-        return msg
+    log_message(msg)
+    encrypt_file(full_path)
+    return msg
 
 def generate_report():
     if os.path.exists(LOG_FILE):
@@ -69,7 +68,7 @@ def generate_report():
         encrypt_file(REPORT_FILE)
     return REPORT_FILE
 
-# =========================== INTERFACE ===========================
+# ==================== INTERFACE GRAPHIQUE ====================
 class ToolboxApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -79,7 +78,6 @@ class ToolboxApp(QWidget):
 
     def init_ui(self):
         layout = QVBoxLayout()
-
         self.ip_input = QLineEdit()
         self.ip_input.setPlaceholderText("Adresse IP cible (ex: 127.0.0.1)")
         layout.addWidget(self.ip_input)
@@ -89,11 +87,7 @@ class ToolboxApp(QWidget):
         layout.addWidget(self.url_input)
 
         self.tool_selector = QComboBox()
-        self.tool_selector.addItem("Nmap")
-        self.tool_selector.addItem("SQLMap")
-        self.tool_selector.addItem("WPScan")
-        self.tool_selector.addItem("Gobuster")
-        self.tool_selector.addItem("Nikto")
+        self.tool_selector.addItems(["Nmap", "SQLMap", "WPScan", "Gobuster", "Nikto"])
         layout.addWidget(self.tool_selector)
 
         self.output_display = QTextEdit()
@@ -124,7 +118,7 @@ class ToolboxApp(QWidget):
             "SQLMap": (f"sqlmap -u {url} --batch", "sqlmap.txt"),
             "WPScan": (f"wpscan --url {url}", "wpscan.txt"),
             "Gobuster": (f"gobuster dir -u {url} -w /usr/share/wordlists/dirb/common.txt", "gobuster.txt"),
-            "Nikto": (f"nikto -h {url}", "nikto.txt"),
+            "Nikto": (f"nikto -h {url}", "nikto.txt")
         }
 
         cmd, outfile = commands[tool]
@@ -135,9 +129,53 @@ class ToolboxApp(QWidget):
         path = generate_report()
         QMessageBox.information(self, "Rapport généré", f"Rapport enregistré dans {path}")
 
+# ==================== INTERFACE LIGNE DE COMMANDE ====================
+def run_cli():
+    print("\n🛠 Mode CLI de la CyberSecurity Toolbox 🛠\n")
+    ip = input("Entrez l'adresse IP cible : ")
+    url = input("Entrez l'URL cible : ")
+
+    tools = {
+        "1": ("Nmap", f"nmap -sP {ip}", "nmap.txt"),
+        "2": ("SQLMap", f"sqlmap -u {url} --batch", "sqlmap.txt"),
+        "3": ("WPScan", f"wpscan --url {url}", "wpscan.txt"),
+        "4": ("Gobuster", f"gobuster dir -u {url} -w /usr/share/wordlists/dirb/common.txt", "gobuster.txt"),
+        "5": ("Nikto", f"nikto -h {url}", "nikto.txt")
+    }
+
+    while True:
+        print("\nOutils disponibles :")
+        for k, (name, _, _) in tools.items():
+            print(f"{k}. {name}")
+        print("r. Générer le rapport final")
+        print("q. Quitter")
+
+        choice = input("Choisissez une option : ")
+        if choice in tools:
+            name, cmd, out = tools[choice]
+            print(run_tool(cmd, out))
+        elif choice == "r":
+            report_path = generate_report()
+            print(f"📄 Rapport généré dans {report_path}")
+        elif choice == "q":
+            break
+        else:
+            print("❌ Choix invalide.")
+
+# ==================== POINT D'ENTRÉE ====================
 if __name__ == '__main__':
     generate_key()
-    app = QApplication(sys.argv)
-    window = ToolboxApp()
-    window.show()
-    sys.exit(app.exec_())
+    print("Bienvenue dans la CyberSecurity Toolbox.")
+    print("1. Lancer l'interface graphique (GUI)")
+    print("2. Utiliser en ligne de commande (CLI)")
+    choice = input("Choix [1/2] : ")
+
+    if choice == "1":
+        app = QApplication(sys.argv)
+        window = ToolboxApp()
+        window.show()
+        sys.exit(app.exec_())
+    elif choice == "2":
+        run_cli()
+    else:
+        print("❌ Choix invalide.")

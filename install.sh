@@ -1,49 +1,74 @@
 #!/bin/bash
 
-echo "🛠️ Installation de la CyberSecurity Toolbox..."
+echo "🔧 Lancement de l'installation de la CyberSecurity Toolbox..."
 
-# 🔄 Mise à jour du système
+# === 🔁 Mise à jour des dépôts ===
 sudo apt update && sudo apt upgrade -y
 
-# 🐍 Python, pip, venv
-sudo apt install -y python3 python3-pip python3-venv
+# === 🧰 Installation des outils de pentest nécessaires ===
+echo "🛠 Installation des outils de base..."
+sudo apt install -y nmap nikto gobuster hydra \
+                    python3 python3-pip python3-venv \
+                    ruby-full curl unzip default-jre
 
-# 🐘 PostgreSQL
-sudo apt install -y postgresql postgresql-contrib
+# === 📦 Installation de SQLMap via pip ===
+echo "📦 Installation de SQLMap..."
+pip install sqlmap --break-system-packages
 
-# ☁️ MinIO (téléchargement et installation)
-if ! command -v minio &> /dev/null
-then
-    echo "⬇️ Installation de MinIO..."
-    wget https://dl.min.io/server/minio/release/linux-amd64/minio -O minio
-    chmod +x minio
-    sudo mv minio /usr/local/bin/
+# === 💎 Installation de WPScan via Ruby ===
+if ! command -v wpscan &> /dev/null; then
+  echo "🔧 Installation de WPScan..."
+  sudo gem install wpscan
+else
+  echo "✅ WPScan déjà installé"
 fi
 
-# 📦 Installation des outils de pentest
-sudo apt install -y nmap nikto gobuster sqlmap hydra wpscan
+# === 🧪 Vérification de PyQt5 ===
+echo "🔍 Vérification de PyQt5..."
+if ! python3 -c "import PyQt5" &> /dev/null; then
+  echo "🔧 PyQt5 non détecté. Installation..."
+  pip install PyQt5 --break-system-packages
+else
+  echo "✅ PyQt5 déjà installé"
+fi
 
-# 🐍 Installation de dépendances Python
-pip3 install -U pip
-pip3 install PyQt5 psycopg2-binary minio
+# === 🔐 Module cryptography (pour chiffrement Fernet) ===
+echo "🔒 Vérification du module cryptography..."
+if ! python3 -c "from cryptography.fernet import Fernet" &> /dev/null; then
+  pip install cryptography --break-system-packages
+fi
 
-# 📂 Création du dossier MinIO
-sudo mkdir -p /mnt/data
-sudo chown $USER:$USER /mnt/data
+# === 📁 Création des dossiers nécessaires ===
+echo "📁 Création des dossiers..."
+mkdir -p results templates
 
-# 🛠 Création de la base PostgreSQL
-echo "🧱 Création de la base PostgreSQL..."
-sudo -u postgres psql <<EOF
-CREATE DATABASE toolbox_db;
-\c toolbox_db
-CREATE TABLE IF NOT EXISTS scans (
-    id SERIAL PRIMARY KEY,
-    ip_target VARCHAR(50),
-    url_target TEXT,
-    tool_used TEXT,
-    log TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-EOF
+# === 📄 Modèle HTML de rapport (Jinja2) ===
+if [ ! -f templates/report_template.html ]; then
+  echo "📄 Création du modèle de rapport HTML..."
+  cat <<EOT > templates/report_template.html
+<!DOCTYPE html>
+<html>
+<head><title>Rapport de Sécurité</title></head>
+<body>
+  <h1>Rapport de la CyberSecurity Toolbox</h1>
+  <pre>{{ logs }}</pre>
+</body>
+</html>
+EOT
+fi
 
-echo "✅ Installation terminée avec succès !"
+# === ✅ Message final pour le client ===
+echo ""
+echo "🚀 La CyberSecurity Toolbox a bien été installée."
+echo ""
+echo "📁 Vous pouvez maintenant l'utiliser avec les commandes suivantes :"
+echo ""
+echo "👉 Pour lancer l'application :"
+echo "   python3 cybersecurity_toolbox.py"
+echo ""
+echo "👉 Vous aurez le choix entre l'interface graphique (GUI) et la version ligne de commande (CLI)."
+echo ""
+echo "📂 Tous les résultats seront enregistrés automatiquement dans le dossier ./results/"
+echo "📄 Un rapport final chiffré sera généré dans final_report.txt (chiffrement automatique avec Fernet)."
+echo ""
+echo "✅ Installation terminée. Bon test d'intrusion !"

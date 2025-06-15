@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+      - "443:5000"
+    volumes:
+      - ./app:/app
+      - reports_data:/app/reports
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development # ou production
+    # Commande pour lancer l'application (peut être remplacée par CMD dans Dockerfile)
+
+volumes:
+  reports_data: 

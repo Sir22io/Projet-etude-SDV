@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Security Toolbox{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #555;
+            --accent-color: #7ED321;
+            --text-color: #E0E0E0;
+            --light-bg: #333;
+            --white-bg: #444;
+            --border-color: #555;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--white-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand .fas {
+            margin-right: 10px;
+        }
+        .navbar-text {
+            color: var(--text-color);
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+        .navbar-text i {
+            margin-right: 5px;
+            color: var(--accent-color);
+        }
+        .container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: var(--white-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+        h1,
+        h3,
+        h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .lead {
+            color: var(--text-color);
+            font-size: 1.15rem;
+        }
+        .nav-pills .nav-link {
+            color: var(--primary-color);
+            border-radius: 5px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .nav-pills .nav-link.active,
+        .nav-pills .nav-link:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .tab-content {
+            padding-top: 20px;
+        }
+        .tool-card {
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--light-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+        .tool-card h5 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+        .tool-card p {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+        .tool-actions button {
+            margin-right: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #3A7ABD;
+            border-color: #3A7ABD;
+        }
+        .btn-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-success:hover {
+            background-color: #6CBF1E;
+            border-color: #6CBF1E;
+        }
+        .btn-outline-danger {
+            color: #FF6B6B;
+            border-color: #FF6B6B;
+        }
+        .btn-outline-danger:hover {
+            background-color: #FF6B6B;
+            color: #fff;
+        }
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            background-color: #555;
+            color: var(--text-color);
+        }
+        .form-control::placeholder {
+            color: #BBB;
+            opacity: 1;
+        }
+        .alert {
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #555;
+            color: var(--text-color);
+        }
+        .alert-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .alert-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .alert-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .result-area {
+            background-color: #222;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .result-area h6 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-lock me-2"></i>Security Toolbox</a>
+            <div class="d-flex align-items-center">
+                {% if session.username %}
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-circle me-1"></i>Bonjour, {{ session.username }}!
+                </span>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html> 

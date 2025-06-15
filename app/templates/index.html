@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Toolbox</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* Bleu plus profond */
+            --secondary-color: #555;   /* Gris foncé */
+            --accent-color: #7ED321;  /* Vert vif pour l'action */
+            --text-color: #E0E0E0;   /* Texte clair sur fond sombre */
+            --light-bg: #333;        /* Fond très sombre */
+            --white-bg: #444;        /* Cartes et panneaux légèrement plus clairs */
+            --border-color: #555;    /* Bordures subtiles */
+            --shadow-color: rgba(0, 0, 0, 0.4); /* Ombres plus prononcées */
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--white-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand .fas {
+            margin-right: 10px;
+        }
+        .navbar-text {
+            color: var(--text-color);
+            font-weight: 500;
+            margin-right: 1rem;
+        }
+        .navbar-text i {
+            margin-right: 5px;
+            color: var(--accent-color);
+        }
+        .container {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: var(--white-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+        }
+        h1,
+        h3,
+        h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .lead {
+            color: var(--text-color);
+            font-size: 1.15rem;
+        }
+        .nav-pills .nav-link {
+            color: var(--primary-color);
+            border-radius: 5px;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .nav-pills .nav-link.active,
+        .nav-pills .nav-link:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        .tab-content {
+            padding-top: 20px;
+        }
+        .tool-card {
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--light-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+        .tool-card h5 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+        .tool-card p {
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+        .tool-actions button {
+            margin-right: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            padding: 8px 15px;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #3A7ABD; /* Slightly darker primary on hover */
+            border-color: #3A7ABD;
+        }
+        .btn-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-success:hover {
+            background-color: #6CBF1E; /* Slightly darker accent on hover */
+            border-color: #6CBF1E;
+        }
+        .btn-outline-danger {
+            color: #FF6B6B; /* Rouge pour le danger/déconnexion */
+            border-color: #FF6B6B;
+        }
+        .btn-outline-danger:hover {
+            background-color: #FF6B6B;
+            color: #fff;
+        }
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            background-color: #555; /* Fond des champs de saisie */
+            color: var(--text-color);
+        }
+        .form-control::placeholder {
+            color: #BBB; /* Couleur du placeholder */
+            opacity: 1;
+        }
+        .alert {
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #555; /* Fond des alertes */
+            color: var(--text-color);
+        }
+        .alert-success {
+            background-color: #28a745; /* Vert plus foncé */
+            border-color: #28a745;
+        }
+        .alert-danger {
+            background-color: #dc3545; /* Rouge plus foncé */
+            border-color: #dc3545;
+        }
+        .alert-info {
+            background-color: #17a2b8; /* Bleu info plus foncé */
+            border-color: #17a2b8;
+        }
+        .result-area {
+            background-color: #222; /* Fond des résultats très sombre */
+            color: #E0E0E0; /* Texte clair pour les résultats */
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .result-area h6 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-lock me-2"></i>Security Toolbox</a>
+            <div class="d-flex align-items-center">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user-circle me-1"></i>Bonjour, {{ session.username }}!
+                </span>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-danger"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-4">Bienvenue sur la Security Toolbox</h1>
+        <p class="lead">Ceci est votre plateforme centralisée pour divers outils de pentest, organisée par pôles fonctionnels.</p>
+
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-security-tab" data-bs-toggle="pill" data-bs-target="#pills-security" type="button" role="tab" aria-controls="pills-security" aria-selected="true">Pôle Sécurité</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-saas-dev-tab" data-bs-toggle="pill" data-bs-target="#pills-saas-dev" type="button" role="tab" aria-controls="pills-saas-dev" aria-selected="false">Pôle Développement SaaS</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-infrastructure-tab" data-bs-toggle="pill" data-bs-target="#pills-infrastructure" type="button" role="tab" aria-controls="pills-infrastructure" aria-selected="false">Pôle Infrastructure</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-support-tab" data-bs-toggle="pill" data-bs-target="#pills-support" type="button" role="tab" aria-controls="pills-support" aria-selected="false">Pôle Support Client et Assistance</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-hr-admin-tab" data-bs-toggle="pill" data-bs-target="#pills-hr-admin" type="button" role="tab" aria-controls="pills-hr-admin" aria-selected="false">Pôle Ressources Humaines et Administration</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" href="{{ url_for('scan_history') }}" role="tab" aria-selected="false"><i class="fas fa-history me-2"></i>Derniers Scans</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-security" role="tabpanel" aria-labelledby="pills-security-tab">
+                <h3 class="mb-3">Pôle Sécurité Outils</h3>
+                <div class="tool-card">
+                    <h5>Nmap (découverte réseau et analyse de ports)</h5>
+                    <p>Nmap est un utilitaire gratuit et open source pour l'exploration de réseau, la gestion de la sécurité, et l'audit. Il est parfait pour la découverte de machines et de services sur un réseau.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="nmap">
+                        <div class="mb-3">
+                            <label for="nmap_target" class="form-label">Cible (IP ou URL)</label>
+                            <input type="text" class="form-control" id="nmap_target" name="target" placeholder="Ex: 192.168.1.1 ou example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/nmap/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="nmap_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Nmap:</h6>
+                        <pre id="nmap_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Metasploit Framework (tests d'intrusion avancés)</h5>
+                    <p>Le Framework Metasploit est une plateforme open source pour le développement, l'exécution et l'inventaire d'exploits. Il est largement utilisé par les professionnels de la sécurité pour les tests d'intrusion.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="metasploit">
+                        <div class="mb-3">
+                            <label for="metasploit_command" class="form-label">Commande Metasploit (simulée)</label>
+                            <input type="text" class="form-control" id="metasploit_command" name="command" placeholder="Ex: use exploit/windows/smb/ms17_010_eternalblue" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/metasploit/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/metasploit/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/metasploit/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/metasploit/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="metasploit_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Metasploit:</h6>
+                        <pre id="metasploit_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Wireshark (analyseur de protocole réseau)</h5>
+                    <p>Wireshark est un analyseur de protocole réseau gratuit et open source. Il est utilisé pour le dépannage de réseau, l'analyse, le développement de logiciels et de protocoles de communication, et l'éducation.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="wireshark">
+                        <div class="mb-3">
+                            <label for="wireshark_interface" class="form-label">Interface réseau</label>
+                            <input type="text" class="form-control" id="wireshark_interface" name="interface" placeholder="Ex: eth0 ou wlan0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="wireshark_duration" class="form-label">Durée de capture (secondes)</label>
+                            <input type="number" class="form-control" id="wireshark_duration" name="duration" placeholder="Ex: 60" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/wireshark/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/wireshark/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/wireshark/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/wireshark/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="wireshark_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Wireshark:</h6>
+                        <pre id="wireshark_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>OWASP ZAP (analyse de sécurité d'applications web)</h5>
+                    <p>OWASP ZAP est un scanner de sécurité d'applications web gratuit et open source. Il est conçu pour les testeurs d'intrusion et les développeurs pour trouver des vulnérabilités dans les applications web.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="owasp_zap">
+                        <div class="mb-3">
+                            <label for="owasp_zap_target" class="form-label">Cible (URL)</label>
+                            <input type="text" class="form-control" id="owasp_zap_target" name="target" placeholder="Ex: https://www.example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/owasp_zap/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/owasp_zap/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/owasp_zap/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/owasp_zap/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="owasp_zap_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'OWASP ZAP:</h6>
+                        <pre id="owasp_zap_result"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-saas-dev" role="tabpanel" aria-labelledby="pills-saas-dev-tab">
+                <h3 class="mb-3">Pôle Développement SaaS Outils</h3>
+                <div class="tool-card">
+                    <h5>Burp Suite (tests de sécurité des applications web)</h5>
+                    <p>Burp Suite est une suite d'outils pour les tests de sécurité des applications web. Il s'agit d'un proxy web qui permet d'intercepter, d'inspecter et de modifier le trafic entre le navigateur et les applications cibles.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="burp_suite">
+                        <div class="mb-3">
+                            <label for="burp_suite_target" class="form-label">Cible (URL)</label>
+                            <input type="text" class="form-control" id="burp_suite_target" name="target" placeholder="Ex: https://www.example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/burp_suite/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/burp_suite/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/burp_suite/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/burp_suite/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="burp_suite_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Burp Suite:</h6>
+                        <pre id="burp_suite_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Postman (tests d'API)</h5>
+                    <p>Postman est une plateforme API pour les développeurs. Il est utilisé pour concevoir, construire, tester et itérer sur vos API.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="postman">
+                        <div class="mb-3">
+                            <label for="postman_collection" class="form-label">Nom de la Collection Postman (simulée)</label>
+                            <input type="text" class="form-control" id="postman_collection" name="collection" placeholder="Ex: Ma_Collection_API" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/postman/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/postman/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/postman/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/postman/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="postman_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Postman:</h6>
+                        <pre id="postman_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>SQLmap (détection et exploitation d'injections SQL)</h5>
+                    <p>SQLmap est un outil open source qui automatise le processus de détection et d'exploitation des failles d'injection SQL et de prise de contrôle des serveurs de bases de données.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="sqlmap">
+                        <div class="mb-3">
+                            <label for="sqlmap_target" class="form-label">Cible (URL avec paramètre vulnérable)</label>
+                            <input type="text" class="form-control" id="sqlmap_target" name="target" placeholder="Ex: https://www.example.com/id=1" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/sqlmap/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sqlmap/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sqlmap/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sqlmap/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="sqlmap_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de SQLmap:</h6>
+                        <pre id="sqlmap_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>OWASP Dependency-Check (analyse des dépendances)</h5>
+                    <p>OWASP Dependency-Check est un utilitaire qui tente de détecter les vulnérabilités connues dans les dépendances d'un projet en comparant les identifiants des composants aux bases de données de vulnérabilités connues.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="dependency_check">
+                        <div class="mb-3">
+                            <label for="dependency_check_path" class="form-label">Chemin du projet/module</label>
+                            <input type="text" class="form-control" id="dependency_check_path" name="path" placeholder="Ex: /app/mon_projet" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/dependency_check/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/dependency_check/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/dependency_check/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/dependency_check/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="dependency_check_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'OWASP Dependency-Check:</h6>
+                        <pre id="dependency_check_result"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-infrastructure" role="tabpanel" aria-labelledby="pills-infrastructure-tab">
+                <h3 class="mb-3">Pôle Infrastructure Outils</h3>
+                <div class="tool-card">
+                    <h5>OpenVAS (Scanner de vulnérabilités)</h5>
+                    <p>OpenVAS est un scanner de vulnérabilités complet qui permet d'identifier les faiblesses dans les systèmes et applications réseau. Il est largement utilisé pour l'audit de sécurité et la gestion des vulnérabilités.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="openvas">
+                        <div class="mb-3">
+                            <label for="openvas_target" class="form-label">Cible (IP ou URL)</label>
+                            <input type="text" class="form-control" id="openvas_target" name="target" placeholder="Ex: 192.168.1.1 ou example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/openvas/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/openvas/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/openvas/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/openvas/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="openvas_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'OpenVAS:</h6>
+                        <pre id="openvas_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Nessus (évaluation des vulnérabilités)</h5>
+                    <p>Nessus est un scanner de vulnérabilités propriétaire développé par Tenable. Il est largement utilisé pour identifier les vulnérabilités dans les systèmes, les applications et les appareils réseau. C'est un outil essentiel pour les audits de sécurité et la gestion des risques.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="nessus">
+                        <div class="mb-3">
+                            <label for="nessus_target" class="form-label">Cible (IP ou URL)</label>
+                            <input type="text" class="form-control" id="nessus_target" name="target" placeholder="Ex: 192.168.1.1 ou example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/nessus/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nessus/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nessus/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nessus/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="nessus_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Nessus:</h6>
+                        <pre id="nessus_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Hydra (tests de force brute)</h5>
+                    <p>Hydra est un outil de craquage de mots de passe rapide pour divers protocoles, capable de casser des mots de passe en ligne contre des services réseau en utilisant des attaques par dictionnaire ou par force brute. Utile pour vérifier la robustesse des mots de passe.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="hydra">
+                        <div class="mb-3">
+                            <label for="hydra_target" class="form-label">Cible (IP ou URL)</label>
+                            <input type="text" class="form-control" id="hydra_target" name="target" placeholder="Ex: ssh://192.168.1.1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="hydra_protocol" class="form-label">Protocole</label>
+                            <input type="text" class="form-control" id="hydra_protocol" name="protocol" placeholder="Ex: ssh, ftp, http-post-form" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="hydra_wordlist" class="form-label">Chemin de la liste de mots (simulée)</label>
+                            <input type="text" class="form-control" id="hydra_wordlist" name="wordlist" placeholder="Ex: /usr/share/wordlists/rockyou.txt" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/hydra/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/hydra/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/hydra/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/hydra/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="hydra_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Hydra:</h6>
+                        <pre id="hydra_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Aircrack-ng (tests de sécurité Wi-Fi)</h5>
+                    <p>Aircrack-ng est une suite d'outils pour l'évaluation de la sécurité des réseaux Wi-Fi. Il est utilisé pour la surveillance, l'attaque, le test et le craquage de mots de passe de réseaux sans fil.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="aircrack_ng">
+                        <div class="mb-3">
+                            <label for="aircrack_ng_interface" class="form-label">Interface réseau Wi-Fi</label>
+                            <input type="text" class="form-control" id="aircrack_ng_interface" name="interface" placeholder="Ex: wlan0mon" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/aircrack_ng/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/aircrack_ng/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/aircrack_ng/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/aircrack_ng/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="aircrack_ng_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'Aircrack-ng:</h6>
+                        <pre id="aircrack_ng_result"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-support" role="tabpanel" aria-labelledby="pills-support-tab">
+                <h3 class="mb-3">Pôle Support Client et Assistance Outils</h3>
+                <div class="tool-card">
+                    <h5>Nikto (analyse des serveurs web)</h5>
+                    <p>Nikto est un scanner de serveurs web open source qui effectue des tests complets sur les serveurs web pour trouver des milliers de vulnérabilités potentielles, des fichiers de configuration non sécurisés, et d'autres problèmes.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="nikto">
+                        <div class="mb-3">
+                            <label for="nikto_target" class="form-label">Cible (URL)</label>
+                            <input type="text" class="form-control" id="nikto_target" name="target" placeholder="Ex: https://www.example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/nikto/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nikto/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nikto/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nikto/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="nikto_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Nikto:</h6>
+                        <pre id="nikto_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>SSLyze (analyse de la configuration SSL/TLS)</h5>
+                    <p>SSLyze est un scanner réseau rapide et complet qui peut analyser la configuration SSL/TLS d'un serveur en détectant les vulnérabilités, les chiffrements pris en charge et les certificats.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="sslyze">
+                        <div class="mb-3">
+                            <label for="sslyze_target" class="form-label">Cible (IP ou URL:Port)</label>
+                            <input type="text" class="form-control" id="sslyze_target" name="target" placeholder="Ex: example.com:443" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/sslyze/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sslyze/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sslyze/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/sslyze/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="sslyze_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'SSLyze:</h6>
+                        <pre id="sslyze_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Ettercap (tests de sécurité réseau)</h5>
+                    <p>Ettercap est une suite d'outils pour les attaques de l'homme du milieu (MITM) sur un réseau local. Il peut être utilisé pour l'interception de mots de passe, la falsification de DNS, et l'analyse de protocoles.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="ettercap">
+                        <div class="mb-3">
+                            <label for="ettercap_interface" class="form-label">Interface réseau</label>
+                            <input type="text" class="form-control" id="ettercap_interface" name="interface" placeholder="Ex: eth0" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/ettercap/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/ettercap/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/ettercap/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/ettercap/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="ettercap_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'Ettercap:</h6>
+                        <pre id="ettercap_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Maltego (collecte d'informations et analyse de données)</h5>
+                    <p>Maltego est un logiciel utilisé pour l'OSINT et la criminalistique graphique. Il est utilisé pour collecter et analyser des informations sur les personnes, les organisations, les domaines et les infrastructures.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="maltego">
+                        <div class="mb-3">
+                            <label for="maltego_target" class="form-label">Entité à rechercher (Domaine, Email, Nom, etc.)</label>
+                            <input type="text" class="form-control" id="maltego_target" name="target" placeholder="Ex: example.com ou john.doe@example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/maltego/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/maltego/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/maltego/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/maltego/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="maltego_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Maltego:</h6>
+                        <pre id="maltego_result"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-hr-admin" role="tabpanel" aria-labelledby="pills-hr-admin-tab">
+                <h3 class="mb-3">Pôle Ressources Humaines et Administration Outils</h3>
+                <div class="tool-card">
+                    <h5>John the Ripper (audit de politique de mot de passe)</h5>
+                    <p>John the Ripper est un outil de récupération de mot de passe rapide, utilisé pour détecter les mots de passe faibles dans les systèmes d'exploitation et les applications. Idéal pour auditer la robustesse des politiques de mot de passe.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="john_the_ripper">
+                        <div class="mb-3">
+                            <label for="john_target" class="form-label">Fichier de hachage de mot de passe</label>
+                            <input type="text" class="form-control" id="john_target" name="target" placeholder="Ex: /path/to/hashes.txt" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/john_the_ripper/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/john_the_ripper/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/john_the_ripper/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/john_the_ripper/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="john_the_ripper_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de John the Ripper:</h6>
+                        <pre id="john_the_ripper_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Acunetix (scans de vulnérabilités web)</h5>
+                    <p>Acunetix est un scanner de vulnérabilités web automatisé qui détecte plus de 4500 vulnérabilités web, y compris les injections SQL et les XSS. Il est conçu pour les audits de sécurité des applications web.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="acunetix">
+                        <div class="mb-3">
+                            <label for="acunetix_target" class="form-label">Cible (URL)</label>
+                            <input type="text" class="form-control" id="acunetix_target" name="target" placeholder="Ex: https://www.example.com" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/acunetix/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/acunetix/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/acunetix/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/acunetix/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="acunetix_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution d'Acunetix:</h6>
+                        <pre id="acunetix_result"></pre>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <h5>Nmap NSE (Nmap Scripting Engine)</h5>
+                    <p>Nmap Scripting Engine (NSE) permet aux utilisateurs d'écrire leurs propres scripts (en Lua) pour automatiser un large éventail de tâches de mise en réseau de sécurité, telles que la détection de vulnérabilités, la découverte de services ou l'exploitation de failles.</p>
+                    <form action="/execute_tool" method="post">
+                        <input type="hidden" name="tool_name" value="nmap_nse">
+                        <div class="mb-3">
+                            <label for="nmap_nse_target" class="form-label">Cible (IP ou URL)</label>
+                            <input type="text" class="form-control" id="nmap_nse_target" name="target" placeholder="Ex: 192.168.1.1 ou example.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nmap_nse_script" class="form-label">Nom du script NSE (Ex: http-enum)</label>
+                            <input type="text" class="form-control" id="nmap_nse_script" name="script" placeholder="Ex: http-enum" required>
+                        </div>
+                        <div class="tool-actions">
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-play me-1"></i>Exécuter l'outil</button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-download me-1"></i>Télécharger le résultat
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/download_report/nmap_nse/html">HTML</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap_nse/pdf">PDF</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap_nse/csv">CSV</a></li>
+                                    <li><a class="dropdown-item" href="/download_report/nmap_nse/txt">TXT</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-area mt-3" id="nmap_nse_result_area" style="display: none;">
+                        <h6>Résultat de l'exécution de Nmap NSE:</h6>
+                        <pre id="nmap_nse_result"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to display flash messages
+            function showFlashMessage(message, category) {
+                let flashContainer = document.getElementById('flash-messages');
+                if (!flashContainer) {
+                    // Create flash messages container if it doesn't exist
+                    const containerElement = document.querySelector('.container');
+                    const newFlashContainer = document.createElement('div');
+                    newFlashContainer.id = 'flash-messages';
+                    containerElement.prepend(newFlashContainer);
+                    flashContainer = newFlashContainer;
+                }
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${category} alert-dismissible fade show`;
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    <div>${message}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                flashContainer.insertBefore(alertDiv, flashContainer.firstChild);
+                // Automatically close alert after 5 seconds
+                setTimeout(() => {
+                    const bootstrapAlert = bootstrap.Alert.getInstance(alertDiv);
+                    if (bootstrapAlert) {
+                        bootstrapAlert.close();
+                    } else {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+
+            // Function to handle form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', async function(event) {
+                    event.preventDefault();
+                    const toolName = this.querySelector('input[name="tool_name"]').value;
+                    const resultArea = document.getElementById(`${toolName}_result_area`);
+                    const resultPre = document.getElementById(`${toolName}_result`);
+
+                    resultPre.textContent = 'Exécution en cours...';
+                    if (resultArea) {
+                        resultArea.style.display = 'block';
+                    }
+
+                    try {
+                        const formData = new FormData(this);
+                        const response = await fetch('/execute_tool', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+
+                        if (data.success) {
+                            resultPre.textContent = data.result;
+                            showFlashMessage(data.message, 'success');
+                        } else {
+                            resultPre.textContent = `Erreur: ${data.message || "Une erreur inconnue est survenue."}\n\n${data.result || ''}`;
+                            showFlashMessage(data.message || "Échec de l'exécution.", 'danger');
+                        }
+                    } catch (error) {
+                        console.error("Erreur lors de l'exécution de l'outil:", error);
+                        resultPre.textContent = `Erreur réseau ou interne: ${error.message}`;
+                        showFlashMessage("Une erreur inattendue est survenue lors de la communication.", 'danger');
+                    }
+                });
+            });
+
+            // Ensure tool-specific result areas are hidden initially
+            const knownTools = ['nmap', 'metasploit', 'wireshark', 'owasp_zap', 'burp_suite', 'postman', 'sqlmap', 'dependency_check', 'openvas', 'nessus', 'hydra', 'aircrack_ng', 'nikto', 'sslyze', 'ettercap', 'maltego', 'john_the_ripper', 'acunetix', 'nmap_nse'];
+            knownTools.forEach(tool => {
+                const resultArea = document.getElementById(`${tool}_result_area`);
+                if (resultArea) {
+                    resultArea.style.display = 'none';
+                }
+            });
+
+            // Handle initial tab display if needed
+            const activeTabButton = document.querySelector('#pills-tab button.active');
+            if (activeTabButton) {
+                new bootstrap.Tab(activeTabButton).show();
+            }
+        });
+    </script>
+</body>
+</html> 

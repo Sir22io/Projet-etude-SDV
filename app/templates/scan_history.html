@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Historique des Scans{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Historique des Scans</h1>
+
+{% if scan_history %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Date et Heure</th>
+                <th scope="col">Outil</th>
+                <th scope="col">Cible</th>
+                <th scope="col">Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scan_history %}
+            <tr>
+                <td>{{ scan.timestamp }}</td>
+                <td>{{ scan.tool_name }}</td>
+                <td>{{ scan.target }}</td>
+                <td>{{ scan.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info" role="alert">
+    Aucun scan n'a été enregistré pour le moment.
+</div>
+{% endif %}
+{% endblock %} 

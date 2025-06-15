@@ -1,0 +1,4 @@
+Starting Nmap 7.95 ( https://nmap.org ) at 2025-05-23 14:39 Paris, Madrid (heure d’été)
+Failed to resolve "4324234".
+WARNING: No targets were specified, so 0 hosts scanned.
+Nmap done: 0 IP addresses (0 hosts up) scanned in 1.25 seconds
